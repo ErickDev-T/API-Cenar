@@ -31,6 +31,10 @@ const swaggerDefinition = {
     {
       name: "Categories",
       description: "Categorias del comercio autenticado"
+    },
+    {
+      name: "Products",
+      description: "Productos del comercio autenticado"
     }
   ],
   components: {
