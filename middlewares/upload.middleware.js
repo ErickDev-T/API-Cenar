@@ -23,7 +23,7 @@ const productImageStorage = buildStorage(["public", "Images", "products"]);
 const commerceTypeIconStorage = buildStorage(["public", "Images", "commerceTypeIcons"]);
 
 export const uploadProfileImage = multer({ storage: profileImageStorage }).single("profileImage");
-export const uploadProductImage = multer({ storage: productImageStorage }).single("productImage");
+export const uploadProductImage = multer({ storage: productImageStorage }).single("image");
 export const uploadCommerceTypeIcon = multer({ storage: commerceTypeIconStorage }).single("icon");
 
 export const uploadLogo = multer({ storage: profileImageStorage }).single("logo");

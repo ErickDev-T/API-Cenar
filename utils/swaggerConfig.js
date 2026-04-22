@@ -23,6 +23,18 @@ const swaggerDefinition = {
     {
       name: "Addresses",
       description: "Direcciones del cliente autenticado"
+    },
+    {
+      name: "Favorites",
+      description: "Comercios favoritos del cliente autenticado"
+    },
+    {
+      name: "Categories",
+      description: "Categorias del comercio autenticado"
+    },
+    {
+      name: "Products",
+      description: "Productos del comercio autenticado"
     }
   ],
   components: {

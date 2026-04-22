@@ -13,14 +13,10 @@ import commerceType from "./routes/commerceType.routes.js";
 import configuration from "./routes/configuration.routes.js";
 import adminDashboard from "./routes/adminDashboard.routes.js";
 import adminUsers from "./routes/adminUsers.routes.js";
+import favoritesRoutes from "./routes/favorites.routes.js";
+import categoriesRoutes from "./routes/categories.routes.js";
+import productsRoutes from "./routes/products.routes.js";
 
-//import accountRoutes from "./routes/account.routes.js";
-//import commerceCatalogRoutes from "./routes/commerceCatalog.routes.js";
-//import ordersRoutes from "./routes/orders.routes.js";
-//import favoritesRoutes from "./routes/favorites.routes.js";
-//import categoriesRoutes from "./routes/categories.routes.js";
-//import productsRoutes from "./routes/products.routes.js";
-//import adminRoutes from "./routes/admin.routes.js";
 
 const app = express();
 
@@ -53,11 +49,11 @@ if (process.env.NODE_ENV !== "production") {
 app.use("/api/auth", authRoutes);
 app.use("/api/addresses", addressesRoutes);
 app.use("/api/account", accountRoutes);
+app.use("/api/favorites", favoritesRoutes);
+app.use("/api/categories", categoriesRoutes);
+app.use("/api/products", productsRoutes);
 //app.use("/api", commerceCatalogRoutes);
 //app.use("/api/orders", ordersRoutes);
-//app.use("/api/favorites", favoritesRoutes);
-//app.use("/api/categories", categoriesRoutes);
-//app.use("/api/products", productsRoutes);
 //app.use("/api/admin", adminRoutes);
 app.use("/api/admin/commerce-types", commerceType);
 app.use("/api/configuration", configuration);
