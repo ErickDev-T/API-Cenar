@@ -30,7 +30,9 @@ export default function isAuth(req, res, next) {
     return next();
   } catch (error) {
     error.statusCode =
-      error.name === "TokenExpiredError" ? 401 : error.statusCode || 500;
+      ["TokenExpiredError", "JsonWebTokenError", "NotBeforeError"].includes(error.name)
+        ? 401
+        : error.statusCode || 500;
     return next(error);
   }
 }

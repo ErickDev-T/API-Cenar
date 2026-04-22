@@ -15,6 +15,16 @@ const swaggerDefinition = {
       url: process.env.APP_URL || "http://localhost:8000"
     }
   ],
+  tags: [
+    {
+      name: "Auth",
+      description: "Autenticacion y recuperacion de cuenta"
+    },
+    {
+      name: "Addresses",
+      description: "Direcciones del cliente autenticado"
+    }
+  ],
   components: {
     securitySchemes: {
       BearerAuth: {

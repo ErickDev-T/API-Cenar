@@ -7,10 +7,10 @@ import connectDB from "./utils/MongooseConnection.js";
 import { setupSwagger } from "./utils/swaggerConfig.js";
 
 import authRoutes from "./routes/auth.routes.js";
+import addressesRoutes from "./routes/addresses.routes.js";
 //import accountRoutes from "./routes/account.routes.js";
 //import commerceCatalogRoutes from "./routes/commerceCatalog.routes.js";
 //import ordersRoutes from "./routes/orders.routes.js";
-//import addressesRoutes from "./routes/addresses.routes.js";
 //import favoritesRoutes from "./routes/favorites.routes.js";
 //import categoriesRoutes from "./routes/categories.routes.js";
 //import productsRoutes from "./routes/products.routes.js";
@@ -45,10 +45,10 @@ if (process.env.NODE_ENV !== "production") {
 
 // Rutas
 app.use("/api/auth", authRoutes);
+app.use("/api/addresses", addressesRoutes);
 //app.use("/api/account", accountRoutes);
 //app.use("/api", commerceCatalogRoutes);
 //app.use("/api/orders", ordersRoutes);
-//app.use("/api/addresses", addressesRoutes);
 //app.use("/api/favorites", favoritesRoutes);
 //app.use("/api/categories", categoriesRoutes);
 //app.use("/api/products", productsRoutes);
