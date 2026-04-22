@@ -8,7 +8,7 @@ import { setupSwagger } from "./utils/swaggerConfig.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import addressesRoutes from "./routes/addresses.routes.js";
-//import accountRoutes from "./routes/account.routes.js";
+import accountRoutes from "./routes/account.routes.js";
 //import commerceCatalogRoutes from "./routes/commerceCatalog.routes.js";
 //import ordersRoutes from "./routes/orders.routes.js";
 //import favoritesRoutes from "./routes/favorites.routes.js";
@@ -46,7 +46,7 @@ if (process.env.NODE_ENV !== "production") {
 // Rutas
 app.use("/api/auth", authRoutes);
 app.use("/api/addresses", addressesRoutes);
-//app.use("/api/account", accountRoutes);
+app.use("/api/account", accountRoutes);
 //app.use("/api", commerceCatalogRoutes);
 //app.use("/api/orders", ordersRoutes);
 //app.use("/api/favorites", favoritesRoutes);
