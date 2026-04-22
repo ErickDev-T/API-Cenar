@@ -9,6 +9,12 @@ import { setupSwagger } from "./utils/swaggerConfig.js";
 import authRoutes from "./routes/auth.routes.js";
 import addressesRoutes from "./routes/addresses.routes.js";
 import accountRoutes from "./routes/account.routes.js";
+import commerceType from "./routes/commerceType.routes.js";
+import configuration from "./routes/configuration.routes.js";
+import adminDashboard from "./routes/adminDashboard.routes.js";
+import adminUsers from "./routes/adminUsers.routes.js";
+
+//import accountRoutes from "./routes/account.routes.js";
 //import commerceCatalogRoutes from "./routes/commerceCatalog.routes.js";
 //import ordersRoutes from "./routes/orders.routes.js";
 //import favoritesRoutes from "./routes/favorites.routes.js";
@@ -53,6 +59,10 @@ app.use("/api/account", accountRoutes);
 //app.use("/api/categories", categoriesRoutes);
 //app.use("/api/products", productsRoutes);
 //app.use("/api/admin", adminRoutes);
+app.use("/api/admin/commerce-types", commerceType);
+app.use("/api/configuration", configuration);
+app.use("/api/admin/dashboard", adminDashboard);
+app.use("/api/admin/users", adminUsers);
 
 // Error handler global
 app.use((error, req, res, next) => {
