@@ -16,6 +16,9 @@ import adminUsers from "./routes/adminUsers.routes.js";
 import favoritesRoutes from "./routes/favorites.routes.js";
 import categoriesRoutes from "./routes/categories.routes.js";
 import productsRoutes from "./routes/products.routes.js";
+import commerceCatalogRoutes from "./routes/commerceCatalog.routes.js";
+import ordersRoutes from "./routes/orders.routes.js";
+
 
 
 const app = express();
@@ -52,9 +55,8 @@ app.use("/api/account", accountRoutes);
 app.use("/api/favorites", favoritesRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/products", productsRoutes);
-//app.use("/api", commerceCatalogRoutes);
-//app.use("/api/orders", ordersRoutes);
-//app.use("/api/admin", adminRoutes);
+app.use("/api", commerceCatalogRoutes);
+app.use("/api/orders", ordersRoutes);
 app.use("/api/admin/commerce-types", commerceType);
 app.use("/api/configuration", configuration);
 app.use("/api/admin/dashboard", adminDashboard);
