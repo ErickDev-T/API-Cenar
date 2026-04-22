@@ -282,3 +282,92 @@ export async function updateUserStatus(req, res, next) {
     next(error);
   }
 }
+
+export async function getDeliveries(req, res, next) {
+  try {
+    const { search = "", isActive } = req.query;
+    const { page, limit, skip } = buildPagination(req.query);
+
+    const filter = {
+      ...(search && {
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { lastName: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } }
+        ]
+      })
+    };
+
+    const active = parseBoolean(isActive);
+    if (active !== undefined) filter.isActive = active;
+
+    const [deliveries, total] = await Promise.all([
+      Delivery.find(filter)
+        .select("name lastName phone email isActive deliveryStatus")
+        .skip(skip).limit(limit).lean(),
+      Delivery.countDocuments(filter)
+    ]);
+
+    const data = deliveries.map((d) => ({
+      id: d._id,
+      firstName: d.name,
+      lastName: d.lastName,
+      phone: d.phone,
+      email: d.email,
+      isActive: d.isActive,
+      deliveryStatus: d.deliveryStatus
+    }));
+
+    return res.status(200).json({
+      success: true,
+      data,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getCommerces(req, res, next) {
+  try {
+    const { search = "", isActive } = req.query;
+    const { page, limit, skip } = buildPagination(req.query);
+
+    const filter = {
+      ...(search && {
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } }
+        ]
+      })
+    };
+
+    const active = parseBoolean(isActive);
+    if (active !== undefined) filter.isActive = active;
+
+    const [commerces, total] = await Promise.all([
+      Commerce.find(filter)
+        .select("name email phone isActive commerceType")
+        .populate("commerceType", "name")
+        .skip(skip).limit(limit).lean(),
+      Commerce.countDocuments(filter)
+    ]);
+
+    const data = commerces.map((c) => ({
+      id: c._id,
+      name: c.name,
+      email: c.email,
+      phone: c.phone,
+      isActive: c.isActive,
+      commerceType: c.commerceType?.name ?? null
+    }));
+
+    return res.status(200).json({
+      success: true,
+      data,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }
+    });
+  } catch (error) {
+    next(error);
+  }
+}

@@ -17,8 +17,7 @@ import {
 } from "./validations/adminUsers.validations.js";
 
 import { handleValidationErrors } from "../middlewares/handleValidation.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { requireRole } from "../middlewares/role.middleware.js";
+import isAuth, { requireRole } from "../middlewares/auth.middleware.js";
 import { Roles } from "../utils/enums/roles.js";
 
 const router = express.Router();
@@ -34,7 +33,7 @@ const router = express.Router();
  */
 router.get(
   "/clients",
-  verifyJWT,
+  isAuth,
   requireRole(Roles.ADMIN),
   validatePagination,
   handleValidationErrors(),
@@ -47,7 +46,7 @@ router.get(
  */
 router.get(
   "/deliveries",
-  verifyJWT,
+  isAuth,
   requireRole(Roles.ADMIN),
   validatePagination,
   handleValidationErrors(),
@@ -60,7 +59,7 @@ router.get(
  */
 router.get(
   "/commerces",
-  verifyJWT,
+  isAuth,
   requireRole(Roles.ADMIN),
   validatePagination,
   handleValidationErrors(),
@@ -73,7 +72,7 @@ router.get(
  */
 router.get(
   "/admins",
-  verifyJWT,
+  isAuth,
   requireRole(Roles.ADMIN),
   validatePagination,
   handleValidationErrors(),
@@ -89,7 +88,7 @@ router.get(
  */
 router.post(
   "/admins",
-  verifyJWT,
+  isAuth,
   requireRole(Roles.ADMIN),
   validateCreateAdmin,
   handleValidationErrors(),
@@ -105,7 +104,7 @@ router.post(
  */
 router.put(
   "/admins/:id",
-  verifyJWT,
+  isAuth,
   requireRole(Roles.ADMIN),
   validateUpdateAdmin,
   handleValidationErrors(),
@@ -121,7 +120,7 @@ router.put(
  */
 router.patch(
   "/:id/status",
-  verifyJWT,
+  isAuth,
   requireRole(Roles.ADMIN),
   validateUpdateUserStatus,
   handleValidationErrors(),

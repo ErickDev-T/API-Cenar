@@ -1,6 +1,7 @@
 import express from "express";
 import { getDashboardMetrics } from "../controllers/adminDashboard.controller.js";
-import verifyToken, { requireRole } from "../middlewares/auth.middleware.js";
+import isAuth, { requireRole } from "../middlewares/auth.middleware.js";
+import { Roles } from "../utils/enums/roles.js";
 
 const router = express.Router();
 
@@ -22,8 +23,8 @@ const router = express.Router();
  */
 router.get(
   "/",
-  verifyToken,
-  requireRole("Admin"),
+  isAuth,
+  requireRole(Roles.ADMIN),
   getDashboardMetrics
 );
 

@@ -15,11 +15,12 @@ import {
 
 import { handleValidationErrors } from "../middlewares/handleValidation.js";
 import { uploadCommerceTypeIcon } from "../middlewares/upload.middleware.js";
-import verifyToken, { requireRole } from "../middlewares/auth.middleware.js";
+import isAuth, { requireRole } from "../middlewares/auth.middleware.js";
+import { Roles } from "../utils/enums/roles.js";
 
 const router = express.Router();
 
-router.use(verifyToken);
+router.use(isAuth);
 
 /**
  * @swagger
@@ -99,7 +100,7 @@ router.get(
  */
 router.post(
   "/",
-  requireRole("Admin"),
+  requireRole(Roles.ADMIN),
   uploadCommerceTypeIcon,
   validateCreateCommerceType,
   handleValidationErrors(),
@@ -146,7 +147,7 @@ router.post(
  */
 router.put(
   "/:id",
-  requireRole("Admin"),
+  requireRole(Roles.ADMIN),
   uploadCommerceTypeIcon,
   validateUpdateCommerceType,
   handleValidationErrors(),
@@ -180,7 +181,7 @@ router.put(
  */
 router.delete(
   "/:id",
-  requireRole("Admin"),
+  requireRole(Roles.ADMIN),
   validateCommerceTypeId,
   handleValidationErrors(),
   deleteCommerceType

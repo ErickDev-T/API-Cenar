@@ -5,18 +5,18 @@ import {
   updateConfiguration
 } from "../controllers/configuration.controller.js";
 
-import verifyToken, { requireRole } from "../middlewares/auth.middleware.js";
+import isAuth, { requireRole } from "../middlewares/auth.middleware.js";
 import { handleValidationErrors } from "../middlewares/handleValidation.js";
 import {
   validateConfigurationKey,
   validateUpdateConfiguration
 } from "./validations/configuration.validations.js";
+import { Roles } from "../utils/enums/roles.js";
 
 const router = express.Router();
 
-// Todos los endpoints requieren Admin
-router.use(verifyToken);
-router.use(requireRole("Admin"));
+router.use(isAuth);
+router.use(requireRole(Roles.ADMIN));
 
 /**
  * @swagger
