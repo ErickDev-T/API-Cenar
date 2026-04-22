@@ -6,7 +6,7 @@ import Order from "../models/OrderModel.js";
 import Favorite from "../models/FavoriteModel.js";
 
 // GET /api/admin/commerce-types
-export const getCommerceTypes = async (req, res) => {
+export const getCommerceTypes = async (req, res, next) => {
   try {
     const commerceTypes = await CommerceType.find().lean();
 
@@ -15,27 +15,21 @@ export const getCommerceTypes = async (req, res) => {
       data: commerceTypes
     });
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Error getting commerce types"
-    });
+    return next(error);
   }
 };
 
 // GET /api/admin/commerce-types/:id
-export const getCommerceTypeById = async (req, res) => {
+export const getCommerceTypeById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
     const commerceType = await CommerceType.findById(id).lean();
 
     if (!commerceType) {
-      return res.status(404).json({
-        success: false,
-        message: "Commerce type not found"
-      });
+      const error = new Error("Commerce type not found");
+      error.statusCode = 404;
+      return next(error);
     }
 
     return res.status(200).json({
@@ -43,32 +37,25 @@ export const getCommerceTypeById = async (req, res) => {
       data: commerceType
     });
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Error getting commerce type"
-    });
+    return next(error);
   }
 };
 
 // POST /api/admin/commerce-types
-export const createCommerceType = async (req, res) => {
+export const createCommerceType = async (req, res, next) => {
   try {
     const { name } = req.body;
 
     if (!name?.trim()) {
-      return res.status(400).json({
-        success: false,
-        message: "Name is required"
-      });
+      const error = new Error("Name is required");
+      error.statusCode = 400;
+      return next(error);
     }
 
     if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "Icon is required"
-      });
+      const error = new Error("Icon is required");
+      error.statusCode = 400;
+      return next(error);
     }
 
     const existingCommerceType = await CommerceType.findOne({
@@ -76,10 +63,9 @@ export const createCommerceType = async (req, res) => {
     });
 
     if (existingCommerceType) {
-      return res.status(400).json({
-        success: false,
-        message: "Commerce type already exists"
-      });
+      const error = new Error("Commerce type already exists");
+      error.statusCode = 400;
+      return next(error);
     }
 
     const commerceType = await CommerceType.create({
@@ -93,17 +79,12 @@ export const createCommerceType = async (req, res) => {
       data: commerceType
     });
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Error creating commerce type"
-    });
+    return next(error);
   }
 };
 
 // PUT /api/admin/commerce-types/:id
-export const updateCommerceType = async (req, res) => {
+export const updateCommerceType = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { name } = req.body;
@@ -111,10 +92,9 @@ export const updateCommerceType = async (req, res) => {
     const commerceType = await CommerceType.findById(id);
 
     if (!commerceType) {
-      return res.status(404).json({
-        success: false,
-        message: "Commerce type not found"
-      });
+      const error = new Error("Commerce type not found");
+      error.statusCode = 404;
+      return next(error);
     }
 
     if (name?.trim()) {
@@ -124,10 +104,9 @@ export const updateCommerceType = async (req, res) => {
       });
 
       if (duplicated) {
-        return res.status(400).json({
-          success: false,
-          message: "Commerce type already exists"
-        });
+        const error = new Error("Commerce type already exists");
+        error.statusCode = 400;
+        return next(error);
       }
 
       commerceType.name = name.trim();
@@ -145,65 +124,35 @@ export const updateCommerceType = async (req, res) => {
       data: commerceType
     });
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Error updating commerce type"
-    });
+    return next(error);
   }
 };
 
 // DELETE /api/admin/commerce-types/:id
-export const deleteCommerceType = async (req, res) => {
+export const deleteCommerceType = async (req, res, next) => {
   try {
     const { id } = req.params;
 
     const commerceType = await CommerceType.findById(id);
 
     if (!commerceType) {
-      return res.status(404).json({
-        success: false,
-        message: "Commerce type not found"
-      });
+      const error = new Error("Commerce type not found");
+      error.statusCode = 404;
+      return next(error);
     }
 
-    const commerces = await Commerce.find({
-      commerceType: id
-    }).lean();
-
+    const commerces = await Commerce.find({ commerceType: id }).lean();
     const commerceIds = commerces.map(c => c._id);
 
-    // Eliminar todo lo asociado a esos comercios
-    await Favorite.deleteMany({
-      commerce: { $in: commerceIds }
-    });
-
-    await Order.deleteMany({
-      commerce: { $in: commerceIds }
-    });
-
-    await Product.deleteMany({
-      commerce: { $in: commerceIds }
-    });
-
-    await Category.deleteMany({
-      commerce: { $in: commerceIds }
-    });
-
-    await Commerce.deleteMany({
-      _id: { $in: commerceIds }
-    });
-
+    await Favorite.deleteMany({ commerce: { $in: commerceIds } });
+    await Order.deleteMany({ commerce: { $in: commerceIds } });
+    await Product.deleteMany({ commerce: { $in: commerceIds } });
+    await Category.deleteMany({ commerce: { $in: commerceIds } });
+    await Commerce.deleteMany({ _id: { $in: commerceIds } });
     await CommerceType.findByIdAndDelete(id);
 
     return res.status(204).send();
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Error deleting commerce type"
-    });
+    return next(error);
   }
 };

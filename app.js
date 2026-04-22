@@ -7,6 +7,7 @@ import connectDB from "./utils/MongooseConnection.js";
 import { setupSwagger } from "./utils/swaggerConfig.js";
 
 import authRoutes from "./routes/auth.routes.js";
+import commerceType from "./routes/commerceType.routes.js";
 //import accountRoutes from "./routes/account.routes.js";
 //import commerceCatalogRoutes from "./routes/commerceCatalog.routes.js";
 //import ordersRoutes from "./routes/orders.routes.js";
@@ -53,6 +54,7 @@ app.use("/api/auth", authRoutes);
 //app.use("/api/categories", categoriesRoutes);
 //app.use("/api/products", productsRoutes);
 //app.use("/api/admin", adminRoutes);
+app.use("/api/admin/commerce-types", commerceType);
 
 // Error handler global
 app.use((error, req, res, next) => {

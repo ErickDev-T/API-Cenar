@@ -1,8 +1,19 @@
 import Configuration from "../models/ConfigurationModel.js";
 
 // GET /api/configurations
-export const getConfigurations = async (req, res) => {
+export const getConfigurations = async (req, res, next) => {
   try {
+    let itbisConfiguration = await Configuration.findOne({
+      key: "ITBIS"
+    });
+
+    if (!itbisConfiguration) {
+      itbisConfiguration = await Configuration.create({
+        key: "ITBIS",
+        value: "18"
+      });
+    }
+
     const configurations = await Configuration.find().lean();
 
     return res.status(200).json({
@@ -10,29 +21,34 @@ export const getConfigurations = async (req, res) => {
       data: configurations
     });
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Error getting configurations"
-    });
+    return next(error);
   }
 };
 
 // GET /api/configurations/:key
-export const getConfigurationByKey = async (req, res) => {
+export const getConfigurationByKey = async (req, res, next) => {
   try {
     const { key } = req.params;
 
-    const configuration = await Configuration.findOne({
-      key: key.toUpperCase()
+    const normalizedKey = key.toUpperCase();
+
+    let configuration = await Configuration.findOne({
+      key: normalizedKey
     }).lean();
 
-    if (!configuration) {
-      return res.status(404).json({
-        success: false,
-        message: "Configuration not found"
+    if (!configuration && normalizedKey === "ITBIS") {
+      configuration = await Configuration.create({
+        key: "ITBIS",
+        value: "18"
       });
+
+      configuration = configuration.toObject();
+    }
+
+    if (!configuration) {
+      const error = new Error("Configuration not found");
+      error.statusCode = 404;
+      return next(error);
     }
 
     return res.status(200).json({
@@ -40,54 +56,53 @@ export const getConfigurationByKey = async (req, res) => {
       data: configuration
     });
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Error getting configuration"
-    });
+    return next(error);
   }
 };
 
 // PUT /api/configurations/:key
-export const updateConfiguration = async (req, res) => {
+export const updateConfiguration = async (req, res, next) => {
   try {
     const { key } = req.params;
     const { value } = req.body;
 
     const normalizedKey = key.toUpperCase();
 
-    const configuration = await Configuration.findOne({
+    let configuration = await Configuration.findOne({
       key: normalizedKey
     });
 
-    if (!configuration) {
-      return res.status(404).json({
-        success: false,
-        message: "Configuration not found"
+    if (!configuration && normalizedKey === "ITBIS") {
+      configuration = await Configuration.create({
+        key: "ITBIS",
+        value: "18"
       });
     }
 
-    // Validaciones específicas por tipo de configuración
+    if (!configuration) {
+      const error = new Error("Configuration not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
     if (normalizedKey === "ITBIS") {
       const numericValue = Number(value);
 
       if (isNaN(numericValue)) {
-        return res.status(400).json({
-          success: false,
-          message: "ITBIS value must be numeric"
-        });
+        const error = new Error("ITBIS value must be numeric");
+        error.statusCode = 400;
+        return next(error);
       }
 
       if (numericValue < 0 || numericValue > 100) {
-        return res.status(400).json({
-          success: false,
-          message: "ITBIS must be between 0 and 100"
-        });
+        const error = new Error("ITBIS must be between 0 and 100");
+        error.statusCode = 400;
+        return next(error);
       }
     }
 
     configuration.value = value;
+
     await configuration.save();
 
     return res.status(200).json({
@@ -96,11 +111,6 @@ export const updateConfiguration = async (req, res) => {
       data: configuration
     });
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Error updating configuration"
-    });
+    return next(error);
   }
 };
